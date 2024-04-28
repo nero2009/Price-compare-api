@@ -8,10 +8,24 @@ import (
 	"github.com/nero2009/pricecompare/internal/cache"
 	"github.com/nero2009/pricecompare/internal/handlers"
 	log "github.com/sirupsen/logrus"
+
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 	log.SetReportCaller(true)
+	db, err := sql.Open("mysql", "test:test@(127.0.0.1:3306)/pricecompare?parseTime=true")
+
+	if err != nil {
+		log.Error(err.Error())
+	}
+	errr := db.Ping()
+
+	if errr != nil {
+		log.Error(errr.Error())
+	}
 	var r *chi.Mux = chi.NewRouter()
 	cacheManager := cache.NewCache()
 	handlers.Handler(r, cacheManager)
@@ -28,8 +42,8 @@ func main() {
 		|______|_| \_|_|  \_\\____/   |_|  |_|  |_|
 	`))
 
-	err := http.ListenAndServe(":8091", r)
-	if err != nil {
+	errrr := http.ListenAndServe(":8091", r)
+	if errrr != nil {
 		log.Error(err)
 	}
 
