@@ -8,7 +8,7 @@ Compare prices of products listing on kara.ng and jumia.com
 - [x] Scraper service for Jumia.com
 - [x] public api to search products
 - [x] Cache results of scraping
-- [] Store product listing in Database
+- [ ] Store product listing in Database
 - [ ] Users management(personalised search history)
 
 
