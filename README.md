@@ -1,4 +1,4 @@
-##### Price comparing Api built in Golang
+# Price comparing Api built in Golang
 
 Compare prices of products listing on kara.ng and jumia.com
 
@@ -17,5 +17,5 @@ Compare prices of products listing on kara.ng and jumia.com
 - Golang
 - Chi router
 - Mysql
-- 
+
 
