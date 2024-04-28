@@ -10,6 +10,7 @@ Compare prices of products listing on kara.ng and jumia.com
 - [x] Cache results of scraping
 - [ ] Store product listing in Database
 - [ ] Users management(personalised search history)
+- [ ] Dockerize for easy deployment
 
 
 ### Technology uses
