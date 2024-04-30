@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi"
 	"github.com/nero2009/pricecompare/internal/cache"
@@ -20,11 +21,13 @@ func main() {
 
 	if err != nil {
 		log.Error(err.Error())
+		os.Exit(1)
 	}
 	errr := db.Ping()
 
 	if errr != nil {
 		log.Error(errr.Error())
+		os.Exit(1)
 	}
 	var r *chi.Mux = chi.NewRouter()
 	cacheManager := cache.NewCache()
