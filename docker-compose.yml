@@ -1,7 +1,8 @@
 version: '3'
 services:
   db:
-    image: mysql:latest
+    build:
+      context: ./database
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
