@@ -49,6 +49,4 @@ func main() {
 	if errrr != nil {
 		log.Error(err)
 	}
-
-	// fmt.Println(document.Text())
 }
