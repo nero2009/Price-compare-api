@@ -18,5 +18,6 @@ Compare prices of products listing on kara.ng and jumia.com
 - Golang
 - Chi router
 - Mysql
+- Docker
 
 
