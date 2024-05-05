@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nero2009/pricecompare/api"
 	"github.com/nero2009/pricecompare/internal/cache"
+	"github.com/nero2009/pricecompare/internal/models"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -107,7 +109,7 @@ func GetProductsFromKonga(query string) []api.Product {
 	return products
 }
 
-func GetProducts(query string, cache *cache.Cache) (api.ProductResponse, error) {
+func GetProducts(query string, cache *cache.Cache, db *sql.DB) (api.ProductResponse, error) {
 	var products api.ProductResponse
 
 	cachedProducts, isPresent := cache.Get(query)
@@ -119,6 +121,26 @@ func GetProducts(query string, cache *cache.Cache) (api.ProductResponse, error) 
 
 	kongaProducts := GetProductsFromKonga(query)
 	jumiaProducts := GetJumiaProducts(query)
+
+	for _, kProducts := range kongaProducts {
+		// add products to DB
+		_, err := models.CreateProduct(db, kProducts.Name, kProducts.Name, "https://kara.com.ng/catalogsearch/result", kProducts.Price, 1)
+
+		if err != nil {
+			log.Error("Error adding products to DB", err)
+			return api.ProductResponse{}, err
+		}
+	}
+
+	for _, jProducts := range jumiaProducts {
+		// add products to DB
+		_, err := models.CreateProduct(db, jProducts.Name, jProducts.Name, "https://www.jumia.com.ng/catalog", jProducts.Price, 1)
+
+		if err != nil {
+			log.Error("Error adding products to DB", err)
+			return api.ProductResponse{}, err
+		}
+	}
 
 	products = api.ProductResponse{
 		JumiaProducts: jumiaProducts,

@@ -31,7 +31,7 @@ func main() {
 	}
 	var r *chi.Mux = chi.NewRouter()
 	cacheManager := cache.NewCache()
-	handlers.Handler(r, cacheManager)
+	handlers.Handler(r, cacheManager, db)
 
 	fmt.Println("Starting GO API2 service....")
 
