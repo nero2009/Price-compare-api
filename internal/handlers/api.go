@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -18,7 +17,7 @@ var decoder *schema.Decoder = schema.NewDecoder()
 
 // API is the handler for the API
 
-func Handler(r *chi.Mux, cache *cache.Cache, db *sql.DB) {
+func Handler(r *chi.Mux, cache *cache.Cache) {
 	r.Use(chimiddle.StripSlashes)
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/products", func(w http.ResponseWriter, r *http.Request) {
@@ -33,18 +32,16 @@ func Handler(r *chi.Mux, cache *cache.Cache, db *sql.DB) {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			p, err1 := GetProducts(queryParams.Product, cache, db)
+			p, err := GetProducts(queryParams.Product, cache)
 
-			if err1 != nil {
+			if err != nil {
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
 
 			//add products to DB
-			listingId, errm := models.CreateListing(db, queryParams.Product)
-
-			_, err = models.CreateProduct(db, "HP Laptop", "HP Laptop 32gb 200ram", "https://www.jumia.com.ng/hp-laptop", "1000", listingId)
+			listingId, err := models.CreateListing(queryParams.Product)
 
 			if err != nil {
 				w.Header().Set("Content-Type", "application/json")
@@ -52,16 +49,26 @@ func Handler(r *chi.Mux, cache *cache.Cache, db *sql.DB) {
 				return
 			}
 
-			if errm != nil {
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(http.StatusBadRequest)
-				return
+			//loop through the products and add them to the database
+
+			for _, product := range p.JumiaProducts {
+				_, err = models.CreateProduct(product.Name, product.Price, "https://www.jumia.com.ng/catalog", "1000", listingId)
+
+				if err != nil {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
 			}
 
-			if err != nil {
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(http.StatusBadRequest)
-				return
+			for _, product := range p.KongaProducts {
+				_, err = models.CreateProduct(product.Name, product.Price, "https://kara.com.ng/catalogsearch/result", "1000", listingId)
+
+				if err != nil {
+					w.Header().Set("Content-Type", "application/json")
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
 			}
 
 			w.Header().Set("Content-Type", "application/json")

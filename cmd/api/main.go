@@ -12,18 +12,21 @@ import (
 
 	"database/sql"
 
+	"github.com/nero2009/pricecompare/internal/database"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
 	log.SetReportCaller(true)
-	db, err := sql.Open("mysql", "test:test@(127.0.0.1:3306)/pricecompare?parseTime=true")
+	var err error
+	database.DBCon, err = sql.Open("mysql", "test:test@(127.0.0.1:3306)/pricecompare?parseTime=true")
 
 	if err != nil {
 		log.Error(err.Error())
 		os.Exit(1)
 	}
-	errr := db.Ping()
+	errr := database.DBCon.Ping()
 
 	if errr != nil {
 		log.Error(errr.Error())
@@ -31,7 +34,7 @@ func main() {
 	}
 	var r *chi.Mux = chi.NewRouter()
 	cacheManager := cache.NewCache()
-	handlers.Handler(r, cacheManager, db)
+	handlers.Handler(r, cacheManager)
 
 	fmt.Println("Starting GO API2 service....")
 

@@ -1,8 +1,9 @@
 package models
 
 import (
-	"database/sql"
 	"log"
+
+	"github.com/nero2009/pricecompare/internal/database"
 )
 
 // Listing is a struct that represents a listing in the database
@@ -19,7 +20,8 @@ type Product struct {
 }
 
 // GetListings is a function that returns all the listings in the database
-func GetProducts(db *sql.DB) ([]Product, error) {
+func GetProducts() ([]Product, error) {
+	db := database.DBCon
 	rows, err := db.Query("SELECT * FROM listings")
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +42,8 @@ func GetProducts(db *sql.DB) ([]Product, error) {
 	return products, nil
 }
 
-func GetProductById(db *sql.DB, id string) (Product, error) {
+func GetProductById(id string) (Product, error) {
+	db := database.DBCon
 	rows, err := db.Query("SELECT * FROM products WHERE id = ?", id)
 	var product Product
 
@@ -61,7 +64,8 @@ func GetProductById(db *sql.DB, id string) (Product, error) {
 	return product, nil
 }
 
-func CreateProduct(db *sql.DB, product_name string, description string, url string, price string, listing_id int64) (int64, error) {
+func CreateProduct(product_name string, description string, url string, price string, listing_id int64) (int64, error) {
+	db := database.DBCon
 	result, err := db.Exec("INSERT INTO products (product_name, description, url, price, listing_id, created_at, updated_at) VALUES(?, ?, ?, ?,?,NOW(), NOW())", product_name, description, url, price, listing_id)
 
 	if err != nil {
