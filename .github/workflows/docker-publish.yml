@@ -32,7 +32,7 @@ jobs:
       
       - name: Read package.json
         shell: bash
-        run: echo "##[set-output name=version;]$(jq .version package.json)"         
+        run: echo "##[set-output name=version;]$(cat VERSION)""         
         id: package-version
 
       - name: Get current date
