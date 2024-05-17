@@ -58,8 +58,8 @@ jobs:
           echo "BRANCH: $BRANCH"
 
           # Use Docker `latest` tag convention
-          [ "$BRANCH" == "master" ] && docker tag $IMAGE_NAME $IMAGE_ID:latest
-          [ "$BRANCH" == "master" ] && docker push $IMAGE_ID:latest
+          [ "$BRANCH" == "main" ] && docker tag $IMAGE_NAME $IMAGE_ID:latest
+          [ "$BRANCH" == "main" ] && docker push $IMAGE_ID:latest
           [ "$BRANCH" == "develop" ] && VERSION=$VERSION-$BRANCH-${{ steps.date.outputs.date }}
           [[ $BRANCH == hotfix/* ]] && VERSION=$VERSION-${BRANCH/\//-}-${{ steps.date.outputs.date }}
           [[ $BRANCH == feature/* ]] && VERSION=$VERSION-${BRANCH/\//-}-${{ steps.date.outputs.date }}
