@@ -1,0 +1,68 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - master
+      
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*  
+
+env:
+  # TODO: Change variable to your image's name.
+  IMAGE_NAME: price-compare-api
+
+jobs: 
+
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      
+      - name: Read package.json
+        shell: bash
+        run: echo "##[set-output name=version;]$(jq .version package.json)"         
+        id: package-version
+
+      - name: Get current date
+        id: date
+        run: echo "##[set-output name=date;]$(date +'%Y%m%d%H%M%S')"
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')          
+
+          BRANCH=${{ steps.extract_branch.outputs.branch }}
+          VERSION=${{ steps.package-version.outputs.version }}
+
+          echo "BRANCH: $BRANCH"
+
+          # Use Docker `latest` tag convention
+          [ "$BRANCH" == "master" ] && docker tag $IMAGE_NAME $IMAGE_ID:latest
+          [ "$BRANCH" == "master" ] && docker push $IMAGE_ID:latest
+          [ "$BRANCH" == "develop" ] && VERSION=$VERSION-$BRANCH-${{ steps.date.outputs.date }}
+          [[ $BRANCH == hotfix/* ]] && VERSION=$VERSION-${BRANCH/\//-}-${{ steps.date.outputs.date }}
+          [[ $BRANCH == feature/* ]] && VERSION=$VERSION-${BRANCH/\//-}-${{ steps.date.outputs.date }}
+
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
