@@ -3,7 +3,7 @@ services:
   db:
     image: ghcr.io/nero2009/price-compare-api/price-compare-db:1.0.0
     command: --default-authentication-plugin=mysql_native_password
-    container_name: db
+    container_name: price-compare-db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=password
@@ -25,7 +25,8 @@ services:
       depends_on:
         - db
   price-compare-api:
-    image: ghcr.io/nero2009/price-compare-api/price-compare-api:1.2.1
+    image: ghcr.io/nero2009/price-compare-api/price-compare-api:1.2.3
+    restart: on-failure
     ports:
       - 8080:8080
     depends_on:
