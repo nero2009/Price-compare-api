@@ -20,7 +20,7 @@ import (
 func main() {
 	log.SetReportCaller(true)
 	var err error
-	database.DBCon, err = sql.Open("mysql", "test:test@(127.0.0.1:3306)/pricecompare?parseTime=true")
+	database.DBCon, err = sql.Open("mysql", "test:test@tcp(db)/pricecompare?parseTime=true")
 
 	if err != nil {
 		log.Error(err.Error())
