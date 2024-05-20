@@ -74,7 +74,7 @@ jobs:
 
       - name: Build database image
         shell: bash
-        run: docker build ./database --file Dockerfile --tag $DATABASE_IMAGE_NAME
+        run: docker build ./database --file ./database/Dockerfile --tag $DATABASE_IMAGE_NAME
 
       - name: Push database image
         run: |
