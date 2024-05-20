@@ -28,4 +28,4 @@ RUN  go build ./cmd/api/main.go
 EXPOSE 8090
 
 # Run
-CMD ["/docker-gs-ping"]
+CMD ["./main"]
