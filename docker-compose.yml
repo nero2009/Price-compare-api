@@ -1,8 +1,7 @@
 version: '3'
 services:
   db:
-    build:
-      context: ./database
+    image: ghcr.io/nero2009/price-compare-api/price-compare-db:1.0.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -24,4 +23,21 @@ services:
         - 8090:80
       depends_on:
         - db
+  price-compare-api:
+    image: ghcr.io/nero2009/price-compare-api/price-compare-db:1.0.0
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=pricecompare
+      - DB_USERNAME=test
+      - DB_PASSWORD=test
+    volumes:
+      - ./price-compare-api:/var/www/html
+    networks:
+      - price-compare-network
+
       
