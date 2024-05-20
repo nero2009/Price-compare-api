@@ -24,7 +24,7 @@ services:
       depends_on:
         - db
   price-compare-api:
-    image: ghcr.io/nero2009/price-compare-api/price-compare-db:1.0.0
+    image: ghcr.io/nero2009/price-compare-api/price-compare-api:1.2.0
     ports:
       - 8080:8080
     depends_on:
