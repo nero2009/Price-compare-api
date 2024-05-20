@@ -37,7 +37,6 @@ services:
       - DB_PASSWORD=test
     volumes:
       - ./price-compare-api:/var/www/html
-    networks:
-      - price-compare-network
+    
 
       
