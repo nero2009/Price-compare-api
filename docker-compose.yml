@@ -25,10 +25,10 @@ services:
       depends_on:
         - db
   price-compare-api:
-    image: ghcr.io/nero2009/price-compare-api/price-compare-api:1.2.3
+    image: ghcr.io/nero2009/price-compare-api/price-compare-api:1.2.4
     restart: on-failure
     ports:
-      - 8080:8080
+      - 8091:8091
     depends_on:
       - db
     environment:
